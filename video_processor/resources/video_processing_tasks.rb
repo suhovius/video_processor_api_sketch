@@ -218,6 +218,7 @@ resource "Restart failed video processing task" do
       string "id" do
         description "Failed task database ID"
         example { ::SecureRandom.hex(12) }
+        required true
       end
     end
   end
