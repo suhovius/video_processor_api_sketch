@@ -5,4 +5,4 @@ curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POS
 
 curl -v -H "Authorization: Token token=YwXdQ64vI5oam8ukfUx4SAtt" --form video_processing_task[trim_start]=3 --form video_processing_task[trim_end]=12 --form video_processing_task[source_video]=@spec/fixtures/videos/test_video.mov http://video_processor.dev/api/v1/video_processing_tasks.json
 
-{"id":"57d4766307ae1d429a92c13f","trim_start":3,"trim_end":12,"state":"scheduled","last_error":null,"source_video":{"url":"/system/video_processing_tasks/source_videos/57d4/7663/07ae/1d42/9a92/c13f/original/test_video.mov?1473541731","duration":15},"result_video":{"url":null,"duration":null},"started_at":null,"completed_at":null,"failed_at":null}
+{"id":"57d485e407ae1d50005ff4bc","trim_start":3,"trim_end":12,"state":"scheduled","last_error":null,"source_video":{"url":"http://video_processor.dev/system/video_processing_tasks/source_videos/57d4/85e4/07ae/1d50/005f/f4bc/original/test_video.mov?1473545700","duration":15},"result_video":{"url":null,"duration":null},"started_at":null,"completed_at":null,"failed_at":null}

@@ -23,15 +23,18 @@ resource "Create video processing task" do
           integer "trim_start" do
             description "Video start trimming parameter in seconds"
             example { rand(10) + 1 }
+            required true
           end
 
           integer "trim_end" do
             description "Video end trimming parameter in seconds"
             example { rand(10) + 15 }
+            required true
           end
 
-          string "source_video" do
+          file "source_video" do
             description "Video multipart data file"
+            required true
           end
         end
       end
@@ -45,6 +48,33 @@ resource "Create video processing task" do
       parameters do
         body :document do
           use_shared_block "video processing task fields"
+        end
+      end
+    end
+
+    context "Invalid parameters" do
+      http_status :unprocessable_entity # 422
+
+      parameters do
+        body :document do
+          string "error" do
+            description "Human readable error message"
+            example {  "Trim end can't be blank" }
+          end
+          document "details" do
+            description "error details, can be used for highlighting invalid fields at native app UI"
+            content do
+              array "trim_end" do
+                description "errors array on specific field"
+                example { ["can't be blank", "is not a number"] }
+              end
+
+              array "source_video" do
+                description "errors array on specific field"
+                example { ["can't be blank"] }
+              end
+            end
+          end
         end
       end
     end
