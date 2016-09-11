@@ -2,7 +2,7 @@ require 'securerandom'
 shared_block "video processing task fields" do
   string "id" do
     description "Video processing task database ID"
-    example { ::SecureRandom.hex(24) }
+    example { ::SecureRandom.hex(12) }
   end
 
   integer "trim_start" do
@@ -40,7 +40,7 @@ shared_block "video processing task fields" do
 
       integer "duration" do
         description "result file duration"
-        example { rand(100) + 1 }
+        example { rand(10) + 1 }
       end
     end
   end
@@ -65,5 +65,31 @@ shared_block "video processing task fields" do
   string "last_error" do
     description "Task last error message that happened during video processing"
     example { "FFMPEG: Failed encoding" }
+  end
+end
+
+shared_block "unauthorized user" do
+  context "User is not authorized" do
+    http_status :unauthorized # 401
+
+    parameters do
+      body :document do
+        string "error" do
+          description "Api Token is not valid error message"
+          example { "Bad Credentials" }
+        end
+      end
+    end
+  end
+end
+
+shared_block "authorization header" do
+  headers do
+    add "Authorization" do
+      value "Token token=:token_value"
+      description ":token_value - is an authorization token value (api_token)"
+      example { (:A..:z).to_a.shuffle[0,16].join }
+      required true
+    end
   end
 end

@@ -1,19 +1,11 @@
 resource "Create video processing task" do
-  description "Upload video with time trimming parameters. User can use the mobile app to upload video and define timing parameters. After that, the request must be processed in the background.
-"
+  description "Upload video with time trimming parameters. User can use the mobile app to upload video and define timing parameters. After that, the request must be processed in the background."
   action "create"
   path "/api/v1/video_processing_tasks.json"
   http_method "POST"
   format "json"
 
-  headers do
-    add "Authorization" do
-      value "Token token=:token_value"
-      description ":token_value - is an authorization token value (api_token)"
-      example { (:A..:z).to_a.shuffle[0,16].join }
-      required true
-    end
-  end
+  use_shared_block "authorization header"
 
   parameters do
     body :document do
@@ -59,7 +51,7 @@ resource "Create video processing task" do
         body :document do
           string "error" do
             description "Human readable error message"
-            example {  "Trim end can't be blank" }
+            example {  "Trim end can't be blank, Trim end is not a number, Source video can't be blank" }
           end
           document "details" do
             description "error details, can be used for highlighting invalid fields at native app UI"
@@ -78,7 +70,54 @@ resource "Create video processing task" do
         end
       end
     end
+
+    use_shared_block "unauthorized user"
   end
 
   sample_call 'curl -v -H "Authorization: Token token=YwXdQ64vI5oam8ukfUx4SAtt" --form video_processing_task[trim_start]=3 --form video_processing_task[trim_end]=12 --form video_processing_task[source_video]=@spec/fixtures/videos/test_video.mov http://video_processor.dev/api/v1/video_processing_tasks.json'
 end
+
+resource "Get video processing tasks list" do
+  description "Returns video processing tasks list array ordered by created at in descending order. User can see the list of the requests with their statuses (done, failed, scheduled, processing)."
+  action "index"
+  path "/api/v1/video_processing_tasks.json"
+  http_method "GET"
+  format "json"
+
+  use_shared_block "authorization header"
+
+  parameters do
+    query :document do
+      integer "page" do
+        description "Pagination page"
+        default 1
+      end
+
+      integer "per_page" do
+        description "Pagination place per page"
+        default 25
+      end
+    end
+  end
+
+  responses do
+    context "Success" do
+      http_status :ok # 200
+
+      parameters do
+        body :array do
+          document do
+            content do
+              use_shared_block "video processing task fields"
+            end
+          end
+        end
+      end
+    end
+
+    use_shared_block "unauthorized user"
+  end
+
+  sample_call 'curl -v -H "Authorization: Token token=YwXdQ64vI5oam8ukfUx4SAtt" -H "Accept: application/json" -H "Content-type: application/json" -X GET -d \'{ "page" : 1, "per_page" : 50 }\' http://video_processor.dev/api/v1/video_processing_tasks.json'
+end
+
