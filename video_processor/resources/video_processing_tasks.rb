@@ -204,3 +204,90 @@ resource "Get video processing tasks list" do
 ]'
 end
 
+resource "Restart failed video processing task" do
+  description "Upload video with time trimming parameters. User can use the mobile app to upload video and define timing parameters. After that, the request must be processed in the background."
+  action "restart"
+  path "/api/v1/video_processing_tasks/:id/restart.json"
+  http_method "PATCH"
+  format "json"
+
+  use_shared_block "authorization header"
+
+  parameters do
+    query :document do
+      string "id" do
+        description "Failed task database ID"
+        example { ::SecureRandom.hex(12) }
+      end
+    end
+  end
+
+  responses do
+    context "Success" do
+      http_status :accepted # 202
+
+      parameters do
+        body :document do
+          use_shared_block "video processing task fields"
+        end
+      end
+    end
+
+    context "Task is not in 'failed' state (Can not be switched to done)" do
+      http_status :unprocessable_entity # 422
+
+      parameters do
+        body :document do
+          string "error" do
+            description "Human readable error message"
+            example { "Cannot switch state from done via schedule" }
+          end
+          document "details" do
+            description "error details, can be used for highlighting invalid fields at native app UI"
+          end
+        end
+      end
+    end
+
+    context "Task is not found" do
+      http_status :not_found # 404
+
+      parameters do
+        body :document do
+          string "error" do
+            description "Human readable error message"
+            example { "Couldn't find this data" }
+          end
+          document "details" do
+            description "error details, can be used for highlighting invalid fields at native app UI"
+          end
+        end
+      end
+    end
+
+    use_shared_block "unauthorized user"
+  end
+
+  sample_call 'curl -v -H "Authorization: Token token=YwXdQ64vI5oam8ukfUx4SAtt" -H "Accept: application/json" -H "Content-type: application/json" -X PATCH http://video_processor.dev/api/v1/video_processing_tasks/57d52ca107ae1d24852e6afe/restart.json'
+
+  sample_response '{
+   "id":"57d52ca107ae1d24852e6afe",
+   "trim_start":3,
+   "trim_end":12,
+   "state":"scheduled",
+   "last_error":null,
+   "source_video":{
+      "url":"http://video_processor.dev/system/video_processing_tasks/source_videos/57d5/2ca1/07ae/1d24/852e/6afe/original/test_video.mov?1473588385",
+      "duration":15
+   },
+   "result_video":{
+      "url":null,
+      "duration":null
+   },
+   "started_at":null,
+   "completed_at":null,
+   "failed_at":null,
+   "created_at":1473588385,
+   "updated_at":1473590738
+}'
+end
