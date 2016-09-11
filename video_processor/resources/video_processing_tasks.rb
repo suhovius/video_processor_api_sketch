@@ -115,7 +115,7 @@ resource "Get video processing tasks list" do
       end
 
       integer "per_page" do
-        description "Pagination place per page"
+        description "Pagination per page"
         default 25
       end
     end
@@ -205,7 +205,7 @@ resource "Get video processing tasks list" do
 end
 
 resource "Restart failed video processing task" do
-  description "Upload video with time trimming parameters. User can use the mobile app to upload video and define timing parameters. After that, the request must be processed in the background."
+  description "Restart failed task. User can restart failed requests."
   action "restart"
   path "/api/v1/video_processing_tasks/:id/restart.json"
   http_method "PATCH"
@@ -233,7 +233,7 @@ resource "Restart failed video processing task" do
       end
     end
 
-    context "Task is not in 'failed' state (Can not be switched to done)" do
+    context "Task is not in 'failed' state (Can not be switched to 'scheduled' state)" do
       http_status :unprocessable_entity # 422
 
       parameters do
