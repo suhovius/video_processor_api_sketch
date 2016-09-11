@@ -75,6 +75,27 @@ resource "Create video processing task" do
   end
 
   sample_call 'curl -v -H "Authorization: Token token=YwXdQ64vI5oam8ukfUx4SAtt" --form video_processing_task[trim_start]=3 --form video_processing_task[trim_end]=12 --form video_processing_task[source_video]=@spec/fixtures/videos/test_video.mov http://video_processor.dev/api/v1/video_processing_tasks.json'
+
+  sample_response '{
+   "id":"57d52ca107ae1d24852e6afe",
+   "trim_start":3,
+   "trim_end":12,
+   "state":"scheduled",
+   "last_error":null,
+   "source_video":{
+      "url":"http://video_processor.dev/system/video_processing_tasks/source_videos/57d5/2ca1/07ae/1d24/852e/6afe/original/test_video.mov?1473588385",
+      "duration":15
+   },
+   "result_video":{
+      "url":null,
+      "duration":null
+   },
+   "started_at":null,
+   "completed_at":null,
+   "failed_at":null,
+   "created_at":1473588385,
+   "updated_at":1473588385
+}'
 end
 
 resource "Get video processing tasks list" do
@@ -119,5 +140,67 @@ resource "Get video processing tasks list" do
   end
 
   sample_call 'curl -v -H "Authorization: Token token=YwXdQ64vI5oam8ukfUx4SAtt" -H "Accept: application/json" -H "Content-type: application/json" -X GET -d \'{ "page" : 1, "per_page" : 50 }\' http://video_processor.dev/api/v1/video_processing_tasks.json'
+  sample_response '[
+   {
+      "id":"57d52c6d07ae1d2472bcdcdb",
+      "trim_start":3,
+      "trim_end":10,
+      "state":"scheduled",
+      "last_error":null,
+      "source_video":{
+         "url":"http://video_processor.dev/system/video_processing_tasks/source_videos/57d5/2c6d/07ae/1d24/72bc/dcdb/original/test_video.mov?1473588333",
+         "duration":17
+      },
+      "result_video":{
+         "url":null,
+         "duration":null
+      },
+      "started_at":null,
+      "completed_at":null,
+      "failed_at":null,
+      "created_at":1473588333,
+      "updated_at":1473588333
+   },
+   {
+      "id":"57d52c6d07ae1d2472bcdcdc",
+      "trim_start":3,
+      "trim_end":10,
+      "state":"done",
+      "last_error":null,
+      "source_video":{
+         "url":"http://video_processor.dev/system/video_processing_tasks/source_videos/57d5/2c6d/07ae/1d24/72bc/dcdc/original/test_video.mov?1473584733",
+         "duration":17
+      },
+      "result_video":{
+         "url":"http://video_processor.dev/system/video_processing_tasks/result_videos/57d5/2c6d/07ae/1d24/72bc/dcdc/original/test_video.mov?1473584733",
+         "duration":7
+      },
+      "started_at":1473584433,
+      "completed_at":1473584733,
+      "failed_at":null,
+      "created_at":1473584733,
+      "updated_at":1473584733
+   },
+   {
+      "id":"57d52c6d07ae1d2472bcdcdd",
+      "trim_start":3,
+      "trim_end":10,
+      "state":"failed",
+      "last_error":"Some error message 95",
+      "source_video":{
+         "url":"http://video_processor.dev/system/video_processing_tasks/source_videos/57d5/2c6d/07ae/1d24/72bc/dcdd/original/test_video.mov?1473581133",
+         "duration":15
+      },
+      "result_video":{
+         "url":null,
+         "duration":null
+      },
+      "started_at":1473580833,
+      "completed_at":null,
+      "failed_at":1473581133,
+      "created_at":1473581133,
+      "updated_at":1473581133
+   }
+]'
 end
 

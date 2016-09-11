@@ -57,6 +57,14 @@ shared_block "video processing task fields" do
     description "Task failed at unix timestamp"
   end
 
+  timestamp "created_at" do
+    description "Task created at unix timestamp"
+  end
+
+  timestamp "updated_at" do
+    description "Task updated at unix timestamp"
+  end
+
   string "state" do
     description "Task state. Could be: scheduled, processing, done, failed"
     example { ["scheduled", "processing", "done", "failed"].sample }

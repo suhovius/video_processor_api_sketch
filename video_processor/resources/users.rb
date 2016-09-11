@@ -21,4 +21,8 @@ resource "Request new user token" do
   end
 
   sample_call 'curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST http://video_processor.dev/api/v1/users.json'
+
+  sample_response '{
+   "api_token":"YwXdQ64vI5oam8ukfUx4SAtt"
+}'
 end
